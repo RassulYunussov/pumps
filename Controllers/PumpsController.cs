@@ -17,22 +17,16 @@ namespace pumps.Controllers
         }
         public async Task Values()
         {
-            Random r = new Random();
             Response.ContentType = "text/event-stream";
             try 
             {
+                 StringBuilder sb = new StringBuilder();
                  while(!Request.HttpContext.RequestAborted.IsCancellationRequested) {
-                    StringBuilder sb = new StringBuilder();
                     sb.Append("data:[");
                     Pump[] pumps = _ctx.GetAllPumps();
                     int counter=0;
                     foreach(var p in pumps)
                     {
-                        p.Temperature = r.Next(1,100);
-                        p.Volume = r.Next(1,100);
-                        p.Pressure = r.Next(1,100);
-                        p.Ampers = r.Next(1,100);
-                        p.Vibration = r.Next(1,100);
                         if(counter++>0)
                             sb.Append(",");
                         sb.Append($@"{{ ""pump"":{p.Id}, ""temp"":{p.Temperature}, ""volume"": {p.Volume}, ""vibration"": {p.Vibration}, ""ampers"": {p.Ampers}, ""pressure"": {p.Pressure} }}");
@@ -42,6 +36,7 @@ namespace pumps.Controllers
                     await Response.Body.WriteAsync(buff,0,buff.Length);
                     await Response.Body.FlushAsync();
                     await Task.Delay(1000);
+                    sb.Clear();
                 }
             }
             catch(Exception e)

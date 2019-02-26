@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using pumps.Application;
 using pumps.Database;
+using pumps.Services;
 
 namespace pumps
 {
@@ -37,6 +38,8 @@ namespace pumps
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnectionString"));
             });
             services.AddSingleton<ApplicationContext>();
+
+            services.AddHostedService<SensorsUpdateService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
