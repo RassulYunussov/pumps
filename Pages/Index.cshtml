@@ -1,0 +1,55 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+<H1>Насосы</H1>
+@foreach (var pump in Model.Pumps)
+{
+        <div class="card">
+            <img class="card-img-top" src="holder.js/100x180/" alt="">
+            <div id="mypump" class="card-body">
+                <h4 class="card-title">Насос: @pump.Name </h4>     
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex">
+                                <div class="p-2 flex-grow-1 bd-highlight">Температура</div>
+                                <div class="p-2 bd-highlight"><span id="pump_@(pump.Id)_Temperature">@pump.Temperature</span></div>
+                            </li>
+                            <li class="list-group-item d-flex">
+                                <div class="p-2 flex-grow-1 bd-highlight">Давление</div>
+                                <div class="p-2 bd-highlight"><span id="pump_@(pump.Id)_Pressure">@pump.Pressure</span></div>
+                            </li>
+                            <li class="list-group-item d-flex">
+                                <div class="p-2 flex-grow-1 bd-highlight">Ток</div>
+                                <div class="p-2 bd-highlight"><span id="pump_@(pump.Id)_Ampers">@pump.Ampers</span></div>
+                            </li>
+                            <li class="list-group-item d-flex">
+                                <div class="p-2 flex-grow-1 bd-highlight">Объем</div>
+                                <div class="p-2 bd-highlight"><span id="pump_@(pump.Id)_Volume">@pump.Volume</span></div>
+                            </li>
+                            <li class="list-group-item d-flex">
+                                <div class="p-2 flex-grow-1 bd-highlight">Вибрация</div>
+                                <div class="p-2 bd-highlight"><span id="pump_@(pump.Id)_Vibration">@pump.Vibration</span></div>
+                            </li>
+                        </ul>
+            </div>
+        </div>
+} 
+
+@section Scripts {
+    <script>
+       $(document).ready(function() {
+           var evtSource = new EventSource('pumps/values');
+           evtSource.onmessage = function(e) {
+                var pumps = JSON.parse(e.data);
+                pumps.forEach(p=>{
+                   $('#pump_'+p.pump+'_Temperature').text(p.temp);
+                   $('#pump_'+p.pump+'_Volume').text(p.volume);
+                   $('#pump_'+p.pump+'_Vibration').text(p.vibration);
+                   $('#pump_'+p.pump+'_Ampers').text(p.ampers);
+                   $('#pump_'+p.pump+'_Pressure').text(p.pressure);
+                });
+           }
+        });
+    </script>
+}
