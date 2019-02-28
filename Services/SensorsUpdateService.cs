@@ -27,7 +27,7 @@ namespace pumps.Services
             _logger.LogInformation("Data Generation Started");
 
             _timer = new Timer(DoWork, null, TimeSpan.Zero, 
-                TimeSpan.FromSeconds(5));
+                TimeSpan.FromSeconds(60));
 
             return Task.CompletedTask;
         }
@@ -42,6 +42,7 @@ namespace pumps.Services
                 p.Pressure = _r.Next(1,100);
                 p.Ampers = _r.Next(1,100);
                 p.Vibration = _r.Next(1,100);
+                p.UpdateTime = DateTime.Now;
             }
             _ctx.RecordPumpsData().Wait();
         }

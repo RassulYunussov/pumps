@@ -29,6 +29,8 @@ namespace pumps.Migrations
 
                     b.Property<float>("Temperature");
 
+                    b.Property<DateTime>("UpdateTime");
+
                     b.Property<float>("Vibration");
 
                     b.Property<float>("Volume");

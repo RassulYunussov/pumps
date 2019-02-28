@@ -4,7 +4,7 @@ using pumps.Application;
 using System.Text;
 using pumps.Models;
 using System;
-
+using System.Linq;
 namespace pumps.Controllers
 {
     [Route("{controller}/{action}")]
@@ -14,6 +14,18 @@ namespace pumps.Controllers
         public PumpsController(ApplicationContext ctx)
         {
             _ctx = ctx;
+        }
+        public async Task AddPumpData(int pumpId,float temp,float press,float amps,float vol,float vibr)
+        {
+            Pump pump = await _ctx.GetPump(pumpId);
+            
+            pump.Pressure = press;
+            pump.Ampers = amps;
+            pump.Volume = vol;
+            pump.Vibration = vibr;
+            pump.Temperature = temp;
+            pump.UpdateTime = DateTime.Now;
+            await _ctx.RecordPumpData(pump);
         }
         public async Task Values()
         {

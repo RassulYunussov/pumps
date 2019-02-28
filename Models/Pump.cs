@@ -1,3 +1,5 @@
+using System;
+
 namespace pumps.Models 
 {
     public class Pump
@@ -9,5 +11,6 @@ namespace pumps.Models
         public float Ampers { get; set; }
         public float Volume { get; set; }
         public float Vibration { get; set; }
+        public DateTime UpdateTime { get; set; }
     }
 }

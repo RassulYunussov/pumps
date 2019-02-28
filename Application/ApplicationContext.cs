@@ -27,6 +27,73 @@ namespace pumps.Application
                 }
             }
         }
+
+        public async Task<Pump> GetPump(int pumpId)
+        {
+            Pump pump;
+            if(Pumps.ContainsKey(pumpId))
+                pump = Pumps[pumpId];
+            else 
+            {
+                using(var scope = _sp.CreateScope())
+                {
+                    var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                    pump = new Pump(){Name="Unnamed Pump",Pressure = 0,Temperature = 0,Vibration=0,Ampers=0,Volume=0};
+                    ctx.Pumps.Add(pump);
+                    Pumps.Add(pumpId,pump);
+                    await ctx.SaveChangesAsync();
+                }
+            }
+            return pump;
+        }
+
+        public async Task RecordPumpData(Pump pump)
+        {
+            using(var scope = _sp.CreateScope())
+            {
+                var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                ctx.Pumps.Update(pump);
+                LogSensorData(ctx,pump);
+                await ctx.SaveChangesAsync();
+            }
+        }
+        private void LogSensorData(ApplicationDbContext ctx, Pump p)
+        {
+            SensorLog slTemp = new SensorLog();
+            slTemp.Pump = p;
+            slTemp.Sensor = SensorType.Temperature;
+            slTemp.Value = p.Temperature;
+            slTemp.Date = DateTime.Now;
+            ctx.SensorLogs.Add(slTemp);
+
+            SensorLog slVol = new SensorLog();
+            slVol.Pump = p;
+            slVol.Sensor = SensorType.Volume;
+            slVol.Value = p.Volume;
+            slVol.Date = DateTime.Now;
+            ctx.SensorLogs.Add(slVol);
+
+            SensorLog slPress = new SensorLog();
+            slPress.Pump = p;
+            slPress.Sensor = SensorType.Pressure;
+            slPress.Value = p.Pressure;
+            slPress.Date = DateTime.Now;
+            ctx.SensorLogs.Add(slPress);
+
+            SensorLog slAmp = new SensorLog();
+            slAmp.Pump = p;
+            slAmp.Sensor = SensorType.Ampers;
+            slAmp.Value = p.Ampers;
+            slAmp.Date = DateTime.Now;
+            ctx.SensorLogs.Add(slAmp);
+
+            SensorLog slVibr = new SensorLog();
+            slVibr.Pump = p;
+            slVibr.Sensor = SensorType.Vibration;
+            slVibr.Value = p.Vibration;
+            slVibr.Date = DateTime.Now;
+            ctx.SensorLogs.Add(slVibr);
+        }
         public async Task RecordPumpsData()
         {
             using( var scope = _sp.CreateScope())
@@ -34,41 +101,8 @@ namespace pumps.Application
                 var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
                 foreach(var p in Pumps.Values)
                 {
-                    ctx.Attach(p);
-                    SensorLog slTemp = new SensorLog();
-                    slTemp.Pump = p;
-                    slTemp.Sensor = SensorType.Temperature;
-                    slTemp.Value = p.Temperature;
-                    slTemp.Date = DateTime.Now;
-                    ctx.SensorLogs.Add(slTemp);
-
-                    SensorLog slVol = new SensorLog();
-                    slVol.Pump = p;
-                    slVol.Sensor = SensorType.Volume;
-                    slVol.Value = p.Volume;
-                    slVol.Date = DateTime.Now;
-                    ctx.SensorLogs.Add(slVol);
-
-                    SensorLog slPress = new SensorLog();
-                    slPress.Pump = p;
-                    slPress.Sensor = SensorType.Pressure;
-                    slPress.Value = p.Pressure;
-                    slPress.Date = DateTime.Now;
-                    ctx.SensorLogs.Add(slPress);
-
-                    SensorLog slAmp = new SensorLog();
-                    slAmp.Pump = p;
-                    slAmp.Sensor = SensorType.Ampers;
-                    slAmp.Value = p.Ampers;
-                    slAmp.Date = DateTime.Now;
-                    ctx.SensorLogs.Add(slAmp);
-
-                    SensorLog slVibr = new SensorLog();
-                    slVibr.Pump = p;
-                    slVibr.Sensor = SensorType.Vibration;
-                    slVibr.Value = p.Vibration;
-                    slVibr.Date = DateTime.Now;
-                    ctx.SensorLogs.Add(slVibr);
+                    ctx.Update(p);
+                    LogSensorData(ctx,p);
                 }
                 await ctx.SaveChangesAsync();
             } 
