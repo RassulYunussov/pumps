@@ -1,0 +1,18 @@
+<script>
+       $(document).ready(function() {
+           var evtSource = new EventSource('/pumps/values');
+           evtSource.onmessage = function(e) {
+                var pumps = JSON.parse(e.data);
+                pumps.forEach(p=>{
+                    if( $('#pump_'+p.pump+'_Temperature')!=undefined) {
+                            $('#pump_'+p.pump+'_Temperature').text(p.temp);
+                            $('#pump_'+p.pump+'_Volume').text(p.volume);
+                            $('#pump_'+p.pump+'_Vibration').text(p.vibration);
+                            $('#pump_'+p.pump+'_Ampers').text(p.ampers);
+                            $('#pump_'+p.pump+'_Pressure').text(p.pressure);
+                            $('#pump_'+p.pump+'_UpdateTime').text(p.ut);
+                    }
+                });
+           }
+        });
+</script>

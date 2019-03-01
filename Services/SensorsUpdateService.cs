@@ -27,7 +27,7 @@ namespace pumps.Services
             _logger.LogInformation("Data Generation Started");
 
             _timer = new Timer(DoWork, null, TimeSpan.Zero, 
-                TimeSpan.FromSeconds(60));
+                TimeSpan.FromSeconds(10));
 
             return Task.CompletedTask;
         }
@@ -37,12 +37,7 @@ namespace pumps.Services
             Pump[] pumps = _ctx.GetAllPumps();
             foreach(var p in pumps)
             {
-                p.Temperature = _r.Next(1,100);
-                p.Volume = _r.Next(1,100);
-                p.Pressure = _r.Next(1,100);
-                p.Ampers = _r.Next(1,100);
-                p.Vibration = _r.Next(1,100);
-                p.UpdateTime = DateTime.Now;
+                 _ctx.PumpsState[p.Id] = p.UpdateState( _r.Next(1,100), _r.Next(1,100), _r.Next(1,100), _r.Next(1,100), _r.Next(1,100),DateTime.Now);
             }
             _ctx.RecordPumpsData().Wait();
         }

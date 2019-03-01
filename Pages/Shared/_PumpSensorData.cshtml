@@ -1,0 +1,24 @@
+@using pumps.Models
+@model Pump
+<ul class="list-group">
+<li class="list-group-item d-flex">
+    <div class="p-2 flex-grow-1 bd-highlight">Температура</div>
+    <div class="p-2 bd-highlight"><span id="pump_@(Model.Id)_Temperature">@Model.Temperature</span></div>
+</li>
+<li class="list-group-item d-flex">
+    <div class="p-2 flex-grow-1 bd-highlight">Давление</div>
+    <div class="p-2 bd-highlight"><span id="pump_@(Model.Id)_Pressure">@Model.Pressure</span></div>
+</li>
+<li class="list-group-item d-flex">
+    <div class="p-2 flex-grow-1 bd-highlight">Ток</div>
+    <div class="p-2 bd-highlight"><span id="pump_@(Model.Id)_Ampers">@Model.Ampers</span></div>
+</li>
+<li class="list-group-item d-flex">
+    <div class="p-2 flex-grow-1 bd-highlight">Объем</div>
+    <div class="p-2 bd-highlight"><span id="pump_@(Model.Id)_Volume">@Model.Volume</span></div>
+</li>
+<li class="list-group-item d-flex">
+    <div class="p-2 flex-grow-1 bd-highlight">Вибрация</div>
+    <div class="p-2 bd-highlight"><span id="pump_@(Model.Id)_Vibration">@Model.Vibration</span></div>
+</li>
+</ul>

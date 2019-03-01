@@ -1,0 +1,19 @@
+@page "{id}"
+@model PumpModel
+<div class="card">
+    <div id="mypump" class="card-body">
+        <h4 class="card-title">Насос: @Model.Pump.Name
+            <span style="float:right; font-size:small">
+                     Время снятия показаний:
+                <span id="pump_@(Model.Pump.Id)_UpdateTime"> 
+                 Время снятия показаний: @Model.Pump.UpdateTime.ToShortTimeString()
+                </span>
+            </span>
+           
+        </h4>     
+        <partial name="_PumpSensorData" for="@Model.Pump"></partial>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_PumpSensorDataSSEScripts"></partial>
+}

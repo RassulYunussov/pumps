@@ -13,6 +13,7 @@ namespace pumps.Application
     public class ApplicationContext
     {
         readonly Dictionary<int,Pump> Pumps  = new Dictionary<int,Pump>();
+        public readonly Dictionary<int,bool> PumpsState = new Dictionary<int,bool>();
         readonly IServiceProvider _sp;
         public ApplicationContext(IServiceProvider serviceProvider)
         {
@@ -24,16 +25,17 @@ namespace pumps.Application
                 foreach (var p in pumps)
                 {
                     Pumps.Add(p.Id,p);
+                    PumpsState.Add(p.Id,false);
                 }
             }
         }
 
-        public async Task<Pump> GetPump(int pumpId)
+        public async Task<Pump> GetPump(int pumpId,bool createNew)
         {
-            Pump pump;
+            Pump pump = null;
             if(Pumps.ContainsKey(pumpId))
                 pump = Pumps[pumpId];
-            else 
+            else if(createNew) 
             {
                 using(var scope = _sp.CreateScope())
                 {
@@ -41,10 +43,14 @@ namespace pumps.Application
                     pump = new Pump(){Name="Unnamed Pump",Pressure = 0,Temperature = 0,Vibration=0,Ampers=0,Volume=0};
                     ctx.Pumps.Add(pump);
                     Pumps.Add(pumpId,pump);
+                    PumpsState.Add(pumpId,false);
                     await ctx.SaveChangesAsync();
                 }
             }
-            return pump;
+            else {
+                System.Console.WriteLine("Nu such pump");
+            }
+            return await Task.FromResult(pump);
         }
 
         public async Task RecordPumpData(Pump pump)
@@ -57,6 +63,13 @@ namespace pumps.Application
                 await ctx.SaveChangesAsync();
             }
         }
+
+        internal void ResetPumpsState()
+        {
+           foreach (var k in PumpsState.Keys.ToList())
+               PumpsState[k]=false;
+        }
+
         private void LogSensorData(ApplicationDbContext ctx, Pump p)
         {
             SensorLog slTemp = new SensorLog();
