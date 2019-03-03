@@ -5,6 +5,9 @@ using System.Text;
 using pumps.Models;
 using System;
 using System.Linq;
+using System.Collections.Generic;
+
+
 namespace pumps.Controllers
 {
     [Route("{controller}/{action}")]
@@ -22,6 +25,31 @@ namespace pumps.Controllers
             _ctx.PumpsState[pumpId] = pump.UpdateState(temp,press,amps,vol,vibr,DateTime.Now);
            
             await _ctx.RecordPumpData(pump);
+        }
+        public async Task<List<object[]>> Temperature(int pumpId)
+        {
+            List<object []> values = await _ctx.GetPumpTemperature(pumpId);
+            return values;
+        }
+        public async Task<List<object[]>> Vibration(int pumpId)
+        {
+            List<object []> values = await _ctx.GetPumpVibration(pumpId);
+            return values;
+        }
+        public async Task<List<object[]>> Ampers(int pumpId)
+        {
+            List<object []> values = await _ctx.GetPumpAmpers(pumpId);
+            return values;
+        }
+        public async Task<List<object[]>> Volume(int pumpId)
+        {
+            List<object []> values = await _ctx.GetPumpVolume(pumpId);
+            return values;
+        }
+        public async Task<List<object[]>> Pressure(int pumpId)
+        {
+            List<object []> values = await _ctx.GetPumpPressure(pumpId);
+            return values;
         }
         public async Task Values()
         {

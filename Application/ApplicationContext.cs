@@ -30,6 +30,51 @@ namespace pumps.Application
             }
         }
 
+        internal async Task<List<object []>> GetPumpTemperature(int pumpId)
+        {
+            using(var scope = _sp.CreateScope())
+            {
+                var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                return await ctx.SensorLogs.Where(sl=>sl.Pump.Id==pumpId && sl.Sensor == SensorType.Temperature).Select(sl=>new object[]{(long)sl.Date.Subtract(DateTime.MinValue.AddYears(1969)).TotalMilliseconds,sl.Value}).ToListAsync();
+            }
+        }
+
+        internal async Task<List<object[]>> GetPumpVolume(int pumpId)
+        {
+            using(var scope = _sp.CreateScope())
+            {
+                var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                return await ctx.SensorLogs.Where(sl=>sl.Pump.Id==pumpId && sl.Sensor == SensorType.Volume).Select(sl=>new object[]{(long)sl.Date.Subtract(DateTime.MinValue.AddYears(1969)).TotalMilliseconds,sl.Value}).ToListAsync();
+            }
+        }
+
+        internal async Task<List<object[]>> GetPumpPressure(int pumpId)
+        {
+            using(var scope = _sp.CreateScope())
+            {
+                var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                return await ctx.SensorLogs.Where(sl=>sl.Pump.Id==pumpId && sl.Sensor == SensorType.Pressure).Select(sl=>new object[]{(long)sl.Date.Subtract(DateTime.MinValue.AddYears(1969)).TotalMilliseconds,sl.Value}).ToListAsync();
+            }
+        }
+
+        internal async Task<List<object[]>> GetPumpAmpers(int pumpId)
+        {
+            using(var scope = _sp.CreateScope())
+            {
+                var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                return await ctx.SensorLogs.Where(sl=>sl.Pump.Id==pumpId && sl.Sensor == SensorType.Ampers).Select(sl=>new object[]{(long)sl.Date.Subtract(DateTime.MinValue.AddYears(1969)).TotalMilliseconds,sl.Value}).ToListAsync();
+            }
+        }
+
+        internal async Task<List<object[]>> GetPumpVibration(int pumpId)
+        {
+            using(var scope = _sp.CreateScope())
+            {
+                var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                return await ctx.SensorLogs.Where(sl=>sl.Pump.Id==pumpId && sl.Sensor == SensorType.Vibration).Select(sl=>new object[]{(long)sl.Date.Subtract(DateTime.MinValue.AddYears(1969)).TotalMilliseconds,sl.Value}).ToListAsync();
+            }
+        }
+
         public async Task<Pump> GetPump(int pumpId,bool createNew)
         {
             Pump pump = null;
