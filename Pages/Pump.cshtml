@@ -33,12 +33,12 @@
     <partial name="_PumpSensorDataSSEScripts"></partial>
     <script src="~/lib/highcharts/highcharts.js"></script>
     <script>
+    var chart = [];
     function InitChart(pumpId,sensor,symbol) {
         $.getJSON(
             '/pumps/'+sensor+'?pumpid='+pumpId,
             function (data) {
-
-                Highcharts.chart('container'+sensor, {
+                chart[sensor] = Highcharts.chart('container'+sensor, {
                     chart: {
                         zoomType: 'x'
                     },
