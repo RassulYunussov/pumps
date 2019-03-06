@@ -1,9 +1,11 @@
 <script>
-       function UpdateSensorData(pump,sensor,value) {
+       function UpdateSensorData(pump,sensor,value) { 
            if( $('#pump_'+pump+'_'+sensor)!=undefined) {
                         $('#pump_'+pump+'_'+sensor).text(value);
-                        if(chart!=undefined && chart[sensor] !=undefined) {
-                            chart[sensor].series[0].addPoint([new Date().getTime(),value]);
+                        if (typeof chart !== 'undefined') {
+                            if(chart[sensor] !=undefined) {
+                                chart[sensor].series[0].addPoint([new Date().getTime(),value]);
+                            }
                         }
                 }
        }
